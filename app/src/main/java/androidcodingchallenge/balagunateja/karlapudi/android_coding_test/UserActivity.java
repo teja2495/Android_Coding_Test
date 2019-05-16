@@ -1,15 +1,19 @@
 package androidcodingchallenge.balagunateja.karlapudi.android_coding_test;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +36,26 @@ public class UserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
+        recyclerView = findViewById(R.id.recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
+
+        Button createUser = findViewById(R.id.createUserButton);
+
+        createUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(UserActivity.this, CreateUserActivity.class);
+                startActivity(myIntent);
+                finish();
+            }
+        });
+
+
+            new okHttpAsync().execute("https://reqres.in/api/users");     //AsyncTask to fetch data from API
+
 
     }
 
@@ -46,21 +70,17 @@ public class UserActivity extends AppCompatActivity {
 
         @Override
         protected List<User> doInBackground(String... strings) {
-            List<User> UserList;
-
-            UserList = getAPIData(strings[0]);
-
-            return UserList;
+            return getAPIData(strings[0]);
         }
 
         @Override
         protected void onPostExecute(List<User> UserList) {
             super.onPostExecute(UserList);
+
             RecyclerView.Adapter adapter = new UserAdapter(UserList);
             progressBar.setVisibility(View.INVISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
-            //count.setText("Displaying "+String.valueOf(UserList.size())+ " results");
-            recyclerView.setAdapter(adapter);           //Adapter is set after retreiving the data
+            recyclerView.setAdapter(adapter);           //Adapter is set after retrieving the data
         }
 
     }
@@ -91,11 +111,12 @@ public class UserActivity extends AppCompatActivity {
         List<User> UserList = new ArrayList<>();
 
         // JSON Response Parsing using the result
+
         try {
-            JSONArray jsonArray = new JSONArray(result.toString());
+            JSONObject jsonObject = new JSONObject(result.toString());
+            JSONArray jsonArray = jsonObject.getJSONArray("data");
             for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject UserJson = new JSONObject();
-                UserJson = jsonArray.getJSONObject(i);
+                JSONObject UserJson = jsonArray.getJSONObject(i);
                 User User = new User();
                 User.setFirstName(UserJson.getString("first_name"));
                 User.setLastName(UserJson.getString("last_name"));
@@ -109,8 +130,11 @@ public class UserActivity extends AppCompatActivity {
             Log.d("demo", e.getMessage());
             e.printStackTrace();
         }
+
         return UserList;
     }
+
+    // To check if internet is working or not
 
     private boolean isConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
