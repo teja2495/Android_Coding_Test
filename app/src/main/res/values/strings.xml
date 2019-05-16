@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Android_Coding_Test</string>
+    <string name="create">CREATE USER</string>
+    <string name="name">Name</string>
+    <string name="job">Job</string>
+    <string name="submit">Submit</string>
+    <string name="createUser">CREATE USER</string>
 </resources>

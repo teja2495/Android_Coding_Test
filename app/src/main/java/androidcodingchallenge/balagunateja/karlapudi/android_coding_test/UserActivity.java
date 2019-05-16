@@ -53,9 +53,10 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
-
+        if(isConnected())
             new okHttpAsync().execute("https://reqres.in/api/users");     //AsyncTask to fetch data from API
-
+        else
+            Toast.makeText(UserActivity.this, "No Internet Connection!", Toast.LENGTH_SHORT).show();
 
     }
 
