@@ -30,7 +30,7 @@ import okhttp3.Response;
 
 public class CreateUserActivity extends AppCompatActivity {
 
-    Button submit;
+    Button submit, back;
     EditText name, job;
 
     @Override
@@ -41,6 +41,7 @@ public class CreateUserActivity extends AppCompatActivity {
         submit = findViewById(R.id.buttonSubmit);
         name = findViewById(R.id.editTextName);
         job = findViewById(R.id.editTextJob);
+        back = findViewById(R.id.backButton);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +66,15 @@ public class CreateUserActivity extends AppCompatActivity {
                         }
                     }
 
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(CreateUserActivity.this, UserActivity.class);
+                startActivity(myIntent);
+                finish();
             }
         });
     }
